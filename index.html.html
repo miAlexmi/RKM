@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Молодёжное кооперативное движение</title>
+    <style>
+        /* ===== ПЕРЕМЕННЫЕ И БАЗА ===== */
+        :root {
+            --primary: #1e3a5f;
+            --primary-dark: #152943;
+            --accent: #10b981;
+            --accent-light: #d1fae5;
+            --highlight: #f59e0b;
+            --bg: #fafaf7;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --radius: 16px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.12);
+            --font-main: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+        button { font-family: inherit; cursor: pointer; border: none; }
+
+        /* ===== НАВИГАЦИЯ ===== */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: box-shadow 0.3s;
+        }
+
+        nav.scrolled { box-shadow: var(--shadow); }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            color: var(--text-light);
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            padding: 5px;
+        }
+        .hamburger span {
+            width: 25px; height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        /* ===== HERO ===== */
+        #hero {
+            min-height: 85vh;
+            background: linear-gradient(135deg, var(--primary) 0%, #2563eb 50%, var(--accent) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content { max-width: 800px; position: relative; z-index: 1; }
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+        .hero-content p {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            opacity: 0.9;
+            margin-bottom: 35px;
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* ===== СЕКЦИИ ===== */
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto 50px;
+            font-size: 1.1rem;
+        }
+
+        /* ===== О ДВИЖЕНИИ ===== */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .value-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .value-icon { font-size: 2.5rem; margin-bottom: 15px; }
+        .value-card h3 { color: var(--primary); margin-bottom: 10px; }
+
+        /* ===== КАК ЭТО РАБОТАЕТ ===== */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            counter-reset: step;
+        }
+
+        .step-item {
+            background: var(--card-bg);
+            padding: 35px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            text-align: center;
+        }
+
+        .step-item::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            top: -20px; left: 50%;
+            transform: translateX(-50%);
+            width: 40px; height: 40px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* ===== ПРОЕКТЫ ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .project-card:hover { transform: translateY(-6px); }
+        .project-img {
+            width: 100%; height: 180px;
+            object-fit: cover;
+        }
+        .project-content { padding: 20px; }
+        .project-tag {
+            display: inline-block;
+            background: var(--accent-light);
+            color: #059669;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .project-card h3 { margin-bottom: 8px; color: var(--primary); }
+
+        /* ===== ПРЕИМУЩЕСТВА ===== */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .check { color: var(--accent); font-size: 1.5rem; flex-shrink: 0; }
+        .benefit-item h4 { font-weight: 600; margin-bottom: 4px; }
+
+        /* ===== ФОРМА ЗАЯВКИ ===== */
+        #apply { background: white; border-radius: 24px; box-shadow: var(--shadow); }
+
+        .apply-form {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-weight: 500; font-size: 0.95rem; }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            background: #fafafa;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+        }
+
+        .checkbox-group { flex-direction: row; align-items: center; gap: 10px; }
+        .checkbox-group input { width: 20px; height: 20px; accent-color: var(--accent); }
+
+        .submit-btn {
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+        .submit-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+        /* ===== КОНТАКТЫ / ФУТЕР ===== */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 60px 20px 30px;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 { margin-bottom: 20px; font-weight: 600; }
+        .footer-col p, .footer-col a {
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 10px;
+            display: block;
+            transition: color 0.3s;
+        }
+        .footer-col a:hover { color: white; }
+        .social-links { display: flex; gap: 15px; margin-top: 15px; }
+        .social-links a {
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .copyright {
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 25px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* ===== UI ЭЛЕМЕНТЫ ===== */
+        #backToTop {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            width: 50px; height: 50px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 99;
+        }
+        #backToTop.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .modal {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal.active { opacity: 1; pointer-events: all; }
+        .modal-content {
+            background: white; padding: 40px; border-radius: var(--radius);
+            text-align: center; max-width: 400px;
+            box-shadow: var(--shadow-hover);
+        }
+        .modal-icon { font-size: 3rem; margin-bottom: 15px; }
+
+        /* ===== АНИМАЦИИ ===== */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                top: 100%; left: 0; right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+                box-shadow: var(--shadow);
+                transform: translateY(-150%);
+                transition: transform 0.4s;
+            }
+            .nav-links.open { transform: translateY(0); }
+            .hamburger { display: flex; }
+            .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(6px, 5px); }
+            .hamburger.open span:nth-child(2) { opacity: 0; }
+            .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(6px, -5px); }
+            section { padding: 60px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- НАВИГАЦИЯ -->
+    <nav id="navbar">
+        <div class="logo">🤝 КоопДвиж</div>
+        <div class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about">О движении</a></li>
+            <li><a href="#steps">Как начать</a></li>
+            <li><a href="#projects">Проекты</a></li>
+            <li><a href="#benefits">Преимущества</a></li>
+            <li><a href="#apply">Заявка</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <header id="hero">
+        <div class="hero-content fade-up">
+            <h1>Будущее экономики <br>строим вместе</h1>
+            <p>Молодёжное кооперативное движение объединяет инициативных людей для создания справедливых, прозрачных и устойчивых проектов.</p>
+            <a href="#apply" class="btn btn-primary">Стать участником</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- О ДВИЖЕНИИ -->
+        <section id="about">
+            <h2 class="section-title fade-up">Что такое кооператив?</h2>
+            <p class="section-subtitle fade-up">Кооператив — это не просто бизнес. Это сообщество равных, где каждый голос имеет вес, а прибыль распределяется честно.</p>
+            <div class="values-grid">
+                <div class="value-card fade-up">
+                    <div class="value-icon">🌍</div>
+                    <h3>Солидарность</h3>
+                    <p>Мы поддерживаем друг друга на каждом этапе, делимся опытом и ресурсами без скрытых условий.</p>
+                </div>
+                <div class="value-card fade-up">
+                    <div class="value-icon">⚖️</div>
+                    <h3>Самоуправление</h3>
+                    <p>Никаких жёстких иерархий. Решения принимаются коллективно, а ответственность распределяется справедливо.</p>
+                </div>
+                <div class="value-card fade-up">
+                    <div class="value-icon">💡</div>
+                    <h3>Прозрачность</h3>
+                    <p>Открытая бухгалтерия, чёткие правила и публичные отчёты. Вы всегда знаете, куда идут усилия.</p>
+                </div>
+                <div class="value-card fade-up">
+                    <div class="value-icon">🚀</div>
+                    <h3>Развитие</h3>
+                    <p>Бесплатные мастер-классы, менторство и доступ к базам знаний для личного и профессионального роста.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- КАК ЭТО РАБОТАЕТ -->
+        <section id="steps" style="background: white; border-radius: 24px; max-width: 1200px;">
+            <h2 class="section-title fade-up">Как это работает</h2>
+            <p class="section-subtitle fade-up">Четыре простых шага от идеи до работающего кооператива</p>
+            <div class="steps-grid">
+                <div class="step-item fade-up">
+                    <h3>Найди команду</h3>
+                    <p>Объединись с 3–10 единомышленниками, которые разделяют твои ценности и готовы работать на общий результат.</p>
+                </div>
+                <div class="step-item fade-up">
+                    <h3>Определи модель</h3>
+                    <p>Выберите формат: производственный, сервисный, потребительский или творческий. Мы поможем с документами.</p>
+                </div>
+                <div class="step-item fade-up">
+                    <h3>Запусти проект</h3>
+                    <p>Получите стартовый грант, доступ к площадкам и инструменты для продвижения вашей инициативы.</p>
+                </div>
+                <div class="step-item fade-up">
+                    <h3>Масштабируй</h3>
+                    <p>Растите вместе с движением: обменивайтесь опытом, подключайте новых участников и выходите на новые рынки.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ПРОЕКТЫ -->
+        <section id="projects">
+            <h2 class="section-title fade-up">Наши инициативы</h2>
+            <p class="section-subtitle fade-up">Реальные кейсы кооперативов, которые уже меняют жизнь в регионах</p>
+            <div class="projects-grid">
+                <div class="project-card fade-up">
+                    <img src="https://picsum.photos/id/119/600/400" alt="Экокооператив" class="project-img">
+                    <div class="project-content">
+                        <span class="project-tag">Экология</span>
+                        <h3>«Зелёный цикл»</h3>
+                        <p>Сбор и переработка вторсырья силами местных сообществ. Уже 12 точек в 4 регионах.</p>
+                    </div>
+                </div>
+                <div class="project-card fade-up">
+                    <img src="https://picsum.photos/id/3/600/400" alt="Фаблейб" class="project-img">
+                    <div class="project-content">
+                        <span class="project-tag">Производство</span>
+                        <h3>«Ткацкий двор»</h3>
+                        <p>Совместная мастерская по пошиву экологичной одежды. Честная оплата и нулевые отходы.</p>
+                    </div>
+                </div>
+                <div class="project-card fade-up">
+                    <img src="https://picsum.photos/id/113/600/400" alt="IT" class="project-img">
+                    <div class="project-content">
+                        <span class="project-tag">Технологии</span>
+                        <h3>«Синапс»</h3>
+                        <p>IT-кооператив фрилансеров. Разработка ПО, дизайн и маркетинг на равных условиях.</p>
+                    </div>
+                </div>
+                <div class="project-card fade-up">
+                    <img src="https://picsum.photos/id/1015/600/400" alt="Агро" class="project-img">
+                    <div class="project-content">
+                        <span class="project-tag">Агро</span>
+                        <h3>«Плодородие»</h3>
+                        <p>Сельскохозяйственный кооператив: совместная аренда земли, закупка техники и прямые продажи.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ПРЕИМУЩЕСТВА -->
+        <section id="benefits">
+            <h2 class="section-title fade-up">Почему стоит присоединиться</h2>
+            <div class="benefits-grid">
+                <div class="benefit-item fade-up">
+                    <span class="check">✅</span>
+                    <div>
+                        <h4>Честное распределение дохода</h4>
+                        <p>Прибыль делится пропорционально вкладу, без скрытых комиссий.</p>
+                    </div>
+                </div>
+                <div class="benefit-item fade-up">
+                    <span class="check">✅</span>
+                    <div>
+                        <h4>Бесплатное обучение</h4>
+                        <p>Курсы по финансам, праву, менеджменту и цифровым навыкам.</p>
+                    </div>
+                </div>
+                <div class="benefit-item fade-up">
+                    <span class="check">✅</span>
+                    <div>
+                        <h4>Нетворкинг</h4>
+                        <p>Доступ к сообществу из 2000+ активистов и экспертов по всей стране.</p>
+                    </div>
+                </div>
+                <div class="benefit-item fade-up">
+                    <span class="check">✅</span>
+                    <div>
+                        <h4>Юридическая поддержка</h4>
+                        <p>Помощь в регистрации, составлении устава и ведении документации.</p>
+                    </div>
+                </div>
+                <div class="benefit-item fade-up">
+                    <span class="check">✅</span>
+                    <div>
+                        <h4>Гранты и стартап-фонд</h4>
+                        <p>Возможность получить микрозайм или грант на запуск проекта.</p>
+                    </div>
+                </div>
+                <div class="benefit-item fade-up">
+                    <span class="check">✅</span>
+                    <div>
+                        <h4>Менторство</h4>
+                        <p>Личные консультации от успешных кооператоров и предпринимателей.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ФОРМА ЗАЯВКИ -->
+        <section id="apply">
+            <h2 class="section-title fade-up">Стань частью движения</h2>
+            <p class="section-subtitle fade-up">Заполни форму, и мы свяжемся с тобой в течение 48 часов</p>
+            <form class="apply-form fade-up" id="coopForm">
+                <div class="form-group">
+                    <label for="name">Ваше имя</label>
+                    <input type="text" id="name" placeholder="Анна Иванова" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">Город / Регион</label>
+                    <input type="text" id="city" placeholder="Москва, Новосибирск..." required>
+                </div>
+                <div class="form-group">
+                    <label for="interest">Сфера интересов</label>
+                    <select id="interest" required>
+                        <option value="" disabled selected>Выберите направление</option>
+                        <option value="eco">Экология и переработка</option>
+                        <option value="production">Производство и ремёсла</option>
+                        <option value="it">IT и цифровые сервисы</option>
+                        <option value="agro">Сельское хозяйство</option>
+                        <option value="culture">Культура и образование</option>
+                        <option value="other">Другое</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contact">Email или Telegram</label>
+                    <input type="text" id="contact" placeholder="email@example.com / @username" required>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="agree" required>
+                    <label for="agree">Я согласен(а) на обработку персональных данных</label>
+                </div>
+                <button type="submit" class="submit-btn">Отправить заявку</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- ФУТЕР / КОНТАКТЫ -->
+    <footer id="contacts">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>🤝 КоопДвиж</h3>
+                <p>Молодёжное кооперативное движение России. Создаём экономику будущего уже сегодня.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Контакты</h3>
+                <p>📧 hello@coopmov.ru</p>
+                <p>📞 +7 (495) 123-45-67</p>
+                <p>📍 Москва, ул. Солидарности, 12</p>
+            </div>
+            <div class="footer-col">
+                <h3>Мы в соцсетях</h3>
+                <div class="social-links">
+                    <a href="#" title="Telegram">📱</a>
+                    <a href="#" title="VK">🌐</a>
+                    <a href="#" title="YouTube">🎥</a>
+                </div>
+                <p style="margin-top: 15px; font-size: 0.9rem;">Подписывайтесь на новости и кейсы</p>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2026 Молодёжное кооперативное движение. Все права защищены.
+        </div>
+    </footer>
+
+    <!-- КНОПКА НАВЕРХ -->
+    <button id="backToTop" aria-label="Наверх">↑</button>
+
+    <!-- МОДАЛЬНОЕ ОКНО УСПЕХА -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">🎉</div>
+            <h3>Заявка отправлена!</h3>
+            <p>Спасибо за интерес к движению. Мы свяжемся с вами в ближайшее время.</p>
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="closeModal()">Отлично</button>
+        </div>
+    </div>
+
+    <!-- СКРИПТЫ -->
+    <script>
+        // === Мобильное меню ===
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            navLinks.classList.toggle('open');
+        });
+
+        // Закрытие меню при клике на ссылку
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('open');
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // === Подсветка активного пункта меню при скролле ===
+        const sections = document.querySelectorAll('section, header');
+        const navItems = document.querySelectorAll('.nav-links a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navItems.forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === `#${current}`) {
+                    a.classList.add('active');
+                }
+            });
+
+            // Эффект тени для навигации
+            const nav = document.getElementById('navbar');
+            window.scrollY > 50 ? nav.classList.add('scrolled') : nav.classList.remove('scrolled');
+        });
+
+        // === Кнопка "Наверх" ===
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            window.scrollY > 500 ? backToTop.classList.add('visible') : backToTop.classList.remove('visible');
+        });
+        backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        // === Анимация появления при скролле (Intersection Observer) ===
+        const observerOptions = { threshold: 0.15, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Анимация только один раз
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // === Обработка формы ===
+        const form = document.getElementById('coopForm');
+        const modal = document.getElementById('successModal');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Имитация отправки
+            setTimeout(() => {
+                modal.classList.add('active');
+                form.reset();
+            }, 400);
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // Закрытие модалки по клику вне окна
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    </script>
+</body>
+</html>
